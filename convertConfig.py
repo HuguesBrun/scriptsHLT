@@ -1,12 +1,15 @@
 import os
 import re
+import sys
 
+nameFile=re.split("\.",sys.argv[1])[0];
+print "name=",nameFile
 
-file = open("runTheHLT.py","r")
+file = open(nameFile+".py","r")
 scriptLine = file.readlines()
 file.close()
 
-outFile = open("GrunTheHLT.py","w")
+outFile = open(nameFile+"_Customized.py","w")
 
 for line in scriptLine:
     if len(re.split("HLTEgammaGenericFilter",line))> 1:
@@ -34,6 +37,18 @@ for line in scriptLine:
     if len(re.split("recoEcalCandidateProducer",line))> 1:
         outFile.write('    recoChargedCandidateProducer = cms.InputTag( "hltL3MuonCandidates" ),\n')
         continue
+    if len(re.split("HLTL1UnpackerSequence = ",line))> 1:
+        outFile.write('process.hltMuonSumCaloPFiso= cms.EDProducer( "L3MuonSumCaloPFIsolationProducer",\n')
+        outFile.write('     recoChargedCandidateProducer = cms.InputTag( "hltL3MuonCandidates" ),\n')
+        outFile.write('     pfEcalClusterProducer = cms.InputTag( "hltMuonEcalPFClusterIsoUnseeded" ),\n')
+        outFile.write('     pfHcalClusterProducer = cms.InputTag( "hltMuonHcalPFClusterIsoUnseeded" ),\n')
+        outFile.write(')')
+        outFile.write('\n')
+        outFile.write(line)
+        continue
+    if len(re.split("process.HLTL3muoncaloPFisorecoSequenceNoBoolsUnseededCombIso = ",line))> 1:
+        outFile.write(line[:-3]+" + process.hltMuonSumCaloPFiso) \n")
+	continue
     outFile.write(line)
 
 
