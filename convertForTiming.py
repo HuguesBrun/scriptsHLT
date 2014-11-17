@@ -13,7 +13,6 @@ outFile = open(nameFile+"_Timing.py","w")
 
 for line in scriptLine:
     line = line.replace("hltL1extraParticles","l1extraParticlesFromSkim")
-    line = line.replace("hltCsc2DRecHits","coucou")
     line = line.replace("hltGtDigis","gtDigisFromSkim")
     line = line.replace("hltL1GtObjectMap","gtDigisFromSkim")
     if len(re.split("GMTReadoutCollection",line))> 1:
